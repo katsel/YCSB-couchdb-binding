@@ -3,8 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.yahoo.ycsb</groupId>
-    <artifactId>root</artifactId>
-    <version>0.1.4</version>
+    <artifactId>binding-parent</artifactId>
+    <version>0.11.0</version>
+    <relativePath>../binding-parent</relativePath>
   </parent>
 
   <artifactId>couchdb-binding</artifactId>
