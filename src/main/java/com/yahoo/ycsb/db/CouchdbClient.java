@@ -1,4 +1,23 @@
-package couchdb;
+/**
+ * Copyright 2013 KU Leuven Research and Development - iMinds - Distrinet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Administrative Contact: dnet-project-office@cs.kuleuven.be
+ * Technical Contact: arnaud.schoonjans@student.kuleuven.be
+ */
+
+package com.yahoo.ycsb.db;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,26 +42,10 @@ import com.yahoo.ycsb.DB;
 import com.yahoo.ycsb.DBException;
 import com.yahoo.ycsb.StringByteIterator;
 
-import couchdb.StringToStringMap;
-
-/*
- * Copyright 2013 KU Leuven Research and Development - iMinds - Distrinet
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Administrative Contact: dnet-project-office@cs.kuleuven.be
- * Technical Contact: arnaud.schoonjans@student.kuleuven.be
+/**
+ * CouchDB Client for YCSB.
  */
+
 public class CouchdbClient extends DB{
 
   // Default configuration
@@ -63,8 +66,9 @@ public class CouchdbClient extends DB{
 
   // Constructor for testing purposes
   public CouchdbClient(List<URL> urls){
-    if(urls == null)
+    if(urls == null) {
       throw new IllegalArgumentException("urls is null");
+    }
     this.dbConnector = new LoadBalancedConnector(urls, DEFAULT_DATABASE_NAME);
   }
 
@@ -84,8 +88,7 @@ public class CouchdbClient extends DB{
     try{
       if(hostAndPort.length == 1){
         return new URL(PROTOCOL, host, DEFAULT_COUCHDB_PORT_NUMBER, "");
-      }
-      else{
+      } else{
         int portNumber = Integer.parseInt(hostAndPort[1]);
         return new URL(PROTOCOL, hostAndPort[0], portNumber, "");
       }
@@ -150,10 +153,10 @@ public class CouchdbClient extends DB{
       ByteIterator value = inputMap.getAsByteIt(field);
       result.put(field, value);
     }
-    ByteIterator _id = inputMap.getAsByteIt("_id");
-    ByteIterator _rev = inputMap.getAsByteIt("_rev");
-    result.put("_id",  _id);
-    result.put("_rev", _rev);
+    ByteIterator id = inputMap.getAsByteIt("_id");
+    ByteIterator rev = inputMap.getAsByteIt("_rev");
+    result.put("_id",  id);
+    result.put("_rev", rev);
   }
 
   private void copyAllFieldsToResultMap(StringToStringMap inputMap,
@@ -169,8 +172,9 @@ public class CouchdbClient extends DB{
   public int read(String table, String key, Set<String> fields,
       HashMap<String, ByteIterator> result) {
     StringToStringMap queryResult = this.executeReadOperation(key);
-    if(queryResult == null)
+    if(queryResult == null) {
       return DOC_NOT_FOUND;
+    }
     if(fields == null){
       this.copyAllFieldsToResultMap(queryResult, result);
     }else{
@@ -185,8 +189,9 @@ public class CouchdbClient extends DB{
     ViewResult viewResult = this.executeView(startkey, recordcount);
     for(Row row: viewResult.getRows()){
       JSONObject jsonObj = this.parseAsJsonObject(row.getDoc());
-      if(jsonObj == null)
+      if(jsonObj == null) {
         return JSON_PARSING_FAULT;
+      }
       if(fields == null){
         @SuppressWarnings("unchecked")
         Set<String> requestedFields = jsonObj.keySet();
@@ -231,8 +236,9 @@ public class CouchdbClient extends DB{
   public int update(String table, String key,
       HashMap<String, ByteIterator> values) {
     StringToStringMap queryResult = this.executeReadOperation(key);
-    if(queryResult == null)
+    if(queryResult == null) {
       return DOC_NOT_FOUND;
+    }
     StringToStringMap updatedMap = this.updateFields(queryResult, values);
     return this.executeUpdateOperation(updatedMap);
   }
@@ -258,8 +264,9 @@ public class CouchdbClient extends DB{
   @Override
   public int delete(String table, String key) {
     StringToStringMap toDelete = this.executeReadOperation(key);
-    if(toDelete == null)
+    if(toDelete == null) {
       return DOC_NOT_FOUND;
+    }
     return this.executeDeleteOperation(toDelete);
   }
 
