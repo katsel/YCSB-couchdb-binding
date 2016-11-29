@@ -25,6 +25,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.ektorp.AttachmentInputStream;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.CouchDbInstance;
@@ -57,11 +60,11 @@ import org.ektorp.impl.StdCouchDbInstance;
  *
  * Note: Only the create, get, update and delete methods are implemented.
  */
-
 public class LoadBalancedConnector implements CouchDbConnector{
 
   private final List<CouchDbConnector> connectors;
   private int nextConnector;
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   public LoadBalancedConnector(List<URL> urlsOfNodesInCluster, String databaseName){
     if(urlsOfNodesInCluster == null) {
@@ -110,7 +113,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     if(failed) {
@@ -128,7 +131,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     if(failed) {
@@ -146,7 +149,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     if(failed) {
@@ -162,7 +165,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     throw new NoNodeReacheableException();
@@ -176,7 +179,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     throw new NoNodeReacheableException();
@@ -206,7 +209,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(DocumentNotFoundException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     throw new NoNodeReacheableException();
@@ -220,7 +223,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(DocumentNotFoundException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     throw new NoNodeReacheableException();
@@ -329,7 +332,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       try{
         return this.getConnector().queryView(query);
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     throw new NoNodeReacheableException();
@@ -518,7 +521,7 @@ public class LoadBalancedConnector implements CouchDbConnector{
       } catch(UpdateConflictException exc){
         throw exc;
       } catch(Exception exc){
-        //
+        log.error(exc.getMessage());
       }
     }
     if(failed) {
