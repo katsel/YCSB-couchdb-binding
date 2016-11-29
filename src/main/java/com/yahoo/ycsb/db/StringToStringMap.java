@@ -1,17 +1,4 @@
-package couchdb;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import com.yahoo.ycsb.ByteIterator;
-import com.yahoo.ycsb.StringByteIterator;
-
-/*
+/**
  * Copyright 2013 KU Leuven Research and Development - iMinds - Distrinet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +15,22 @@ import com.yahoo.ycsb.StringByteIterator;
  *
  * Administrative Contact: dnet-project-office@cs.kuleuven.be
  * Technical Contact: arnaud.schoonjans@student.kuleuven.be
+ */
+package com.yahoo.ycsb.db;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.yahoo.ycsb.ByteIterator;
+import com.yahoo.ycsb.StringByteIterator;
+
+/**
+ * Converts a String to a StringMap.
  */
 public class StringToStringMap extends HashMap<String, String> {
 
@@ -90,8 +93,9 @@ public class StringToStringMap extends HashMap<String, String> {
     for (String key : expected.keySet()) {
       String expectedValue = expected.get(key);
       String realValue = real.get(key);
-      if (realValue == null || !expectedValue.equals(realValue))
+      if (realValue == null || !expectedValue.equals(realValue)) {
         return false;
+      }
     }
     return true;
   }
