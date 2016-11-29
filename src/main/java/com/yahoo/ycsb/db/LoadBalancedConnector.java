@@ -1,4 +1,22 @@
-package couchdb;
+/**
+ * Copyright 2013 KU Leuven Research and Development - iMinds - Distrinet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Administrative Contact: dnet-project-office@cs.kuleuven.be
+ * Technical Contact: arnaud.schoonjans@student.kuleuven.be
+ */
+package com.yahoo.ycsb.db;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -33,41 +51,25 @@ import org.ektorp.http.HttpClient;
 import org.ektorp.http.StdHttpClient;
 import org.ektorp.impl.StdCouchDbInstance;
 
-/*
+/**
  * This CouchDbConnector load balances the request to
  * the different nodes in the couchdb cluster.
  *
  * Note: Only the create, get, update and delete methods are implemented.
- *
- * ***********************************************************************
- *
- * Copyright 2013 KU Leuven Research and Development - iMinds - Distrinet
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Administrative Contact: dnet-project-office@cs.kuleuven.be
- * Technical Contact: arnaud.schoonjans@student.kuleuven.be
  */
+
 public class LoadBalancedConnector implements CouchDbConnector{
 
   private final List<CouchDbConnector> connectors;
   private int nextConnector;
 
   public LoadBalancedConnector(List<URL> urlsOfNodesInCluster, String databaseName){
-    if(urlsOfNodesInCluster == null)
+    if(urlsOfNodesInCluster == null) {
       throw new IllegalArgumentException("urlsOfNodesInClusterIsNull");
-    if(urlsOfNodesInCluster.isEmpty())
+    }
+    if(urlsOfNodesInCluster.isEmpty()) {
       throw new IllegalArgumentException("At least one node required");
+    }
     this.connectors = this.createConnectors(urlsOfNodesInCluster, databaseName);
     this.nextConnector = 0;
   }
@@ -107,10 +109,13 @@ public class LoadBalancedConnector implements CouchDbConnector{
         failed = false;
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
-    if(failed)
+    if(failed) {
       throw new NoNodeReacheableException();
+    }
   }
 
   @Override
@@ -122,10 +127,13 @@ public class LoadBalancedConnector implements CouchDbConnector{
         failed = false;
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
-    if(failed)
+    if(failed) {
       throw new NoNodeReacheableException();
+    }
   }
 
   @Override
@@ -137,10 +145,13 @@ public class LoadBalancedConnector implements CouchDbConnector{
         failed = false;
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
-    if(failed)
+    if(failed) {
       throw new NoNodeReacheableException();
+    }
   }
 
   @Override
@@ -150,7 +161,9 @@ public class LoadBalancedConnector implements CouchDbConnector{
         return this.getConnectorForMutationOperations().delete(o);
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
     throw new NoNodeReacheableException();
   }
@@ -162,7 +175,9 @@ public class LoadBalancedConnector implements CouchDbConnector{
         return this.getConnectorForMutationOperations().delete(id, revision);
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
     throw new NoNodeReacheableException();
   }
@@ -190,7 +205,9 @@ public class LoadBalancedConnector implements CouchDbConnector{
         return this.getConnector().get(c, id);
       } catch(DocumentNotFoundException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
     throw new NoNodeReacheableException();
   }
@@ -202,7 +219,9 @@ public class LoadBalancedConnector implements CouchDbConnector{
         return this.getConnector().get(c, id, options);
       } catch(DocumentNotFoundException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
     throw new NoNodeReacheableException();
   }
@@ -309,7 +328,9 @@ public class LoadBalancedConnector implements CouchDbConnector{
     for(int i=0; i<this.connectors.size(); i++){
       try{
         return this.getConnector().queryView(query);
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
     throw new NoNodeReacheableException();
   }
@@ -496,9 +517,12 @@ public class LoadBalancedConnector implements CouchDbConnector{
         failed = false;
       } catch(UpdateConflictException exc){
         throw exc;
-      } catch(Exception exc){}
+      } catch(Exception exc){
+        //
+      }
     }
-    if(failed)
+    if(failed) {
       throw new NoNodeReacheableException();
+    }
   }
 }
